@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.parcial2.farmacia.FarmaciaInicio
-import com.example.parcial2.horario.HorarioInicio
-import com.example.parcial2.listadoEventos.ListadoInicio
+import com.example.parcial2.farmacia.MainFarmaciaActivity
+import com.example.parcial2.horario.MainHorarioActivity
+import com.example.parcial2.listadoEventos.MainEventoActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnHorario: Button
@@ -19,17 +19,17 @@ class MainActivity : AppCompatActivity() {
 
         //Configurar el botón para la aplicación del horario
         btnHorario.setOnClickListener {
-            startActivity(Intent(this, HorarioInicio::class.java))
+            startActivity(Intent(this, MainHorarioActivity::class.java))
         }
 
         //Configurar el botón para la aplicación del listado de eventos
         btnListado.setOnClickListener {
-            startActivity(Intent(this, ListadoInicio::class.java))
+            startActivity(Intent(this, MainEventoActivity::class.java))
         }
 
         //Configurar el botón para la aplicación de las farmacias de Zaragoza
         btnFarmacia.setOnClickListener {
-            startActivity(Intent(this, FarmaciaInicio::class.java))
+            startActivity(Intent(this, MainFarmaciaActivity::class.java))
         }
     }
 }

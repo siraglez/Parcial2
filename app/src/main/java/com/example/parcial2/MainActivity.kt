@@ -19,6 +19,10 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Parcial2"
 
+        btnHorario = findViewById(R.id.btnHorario)
+        btnListado = findViewById(R.id.btnlistado)
+        btnFarmacia = findViewById(R.id.btnfarmacia)
+
         //Configurar el botón para la aplicación del horario
         btnHorario.setOnClickListener {
             startActivity(Intent(this, MainHorarioActivity::class.java))

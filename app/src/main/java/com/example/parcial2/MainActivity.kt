@@ -6,7 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.farmacia.MainFarmaciaActivity
 import com.example.parcial2.horario.MainHorarioActivity
-import com.example.parcial2.listadoEventos.MainEventoActivity
+import com.example.parcial2.eventos.MainEventoActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btnHorario: Button

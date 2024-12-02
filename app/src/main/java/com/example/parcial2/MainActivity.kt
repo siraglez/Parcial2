@@ -1,47 +1,35 @@
 package com.example.parcial2
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.parcial2.ui.theme.Parcial2Theme
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import com.example.parcial2.farmacia.FarmaciaInicio
+import com.example.parcial2.horario.HorarioInicio
+import com.example.parcial2.listadoEventos.ListadoInicio
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+    private lateinit var btnHorario: Button
+    private lateinit var btnListado: Button
+    private lateinit var btnFarmacia: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Parcial2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        //Configurar el botón para la aplicación del horario
+        btnHorario.setOnClickListener {
+            startActivity(Intent(this, HorarioInicio::class.java))
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        //Configurar el botón para la aplicación del listado de eventos
+        btnListado.setOnClickListener {
+            startActivity(Intent(this, ListadoInicio::class.java))
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Parcial2Theme {
-        Greeting("Android")
+        //Configurar el botón para la aplicación de las farmacias de Zaragoza
+        btnFarmacia.setOnClickListener {
+            startActivity(Intent(this, FarmaciaInicio::class.java))
+        }
     }
 }

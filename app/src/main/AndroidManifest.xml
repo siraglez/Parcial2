@@ -21,22 +21,22 @@
         <activity
             android:name=".horario.MainHorarioActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="Mi horario"
             android:theme="@style/Theme.Parcial2"/>
         <activity
             android:name=".horario.AgregarAsignaturaActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="Mi horario - Añadir asignatura"
             android:theme="@style/Theme.Parcial2"/>
         <activity
             android:name=".horario.VerHorarioActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="Mi horario - Ver horario"
             android:theme="@style/Theme.Parcial2"/>
         <activity
             android:name=".horario.ClaseActualActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="Mi horario - ¿Qué toca ahora?"
             android:theme="@style/Theme.Parcial2"/>
 
             <intent-filter>

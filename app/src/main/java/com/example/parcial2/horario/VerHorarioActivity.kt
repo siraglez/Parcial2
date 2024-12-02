@@ -27,7 +27,8 @@ class VerHorarioActivity : AppCompatActivity() {
         }
 
         val dias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dias)
+        val adapter = ArrayAdapter(this, R.layout.spinner_item, dias)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerDias.adapter = adapter
 
         val db = FirebaseFirestore.getInstance()
@@ -48,7 +49,7 @@ class VerHorarioActivity : AppCompatActivity() {
                             documents.map { doc -> doc.getString("nombre") ?: "Clase desconocida" }
                         val listAdapter = ArrayAdapter(
                             this@VerHorarioActivity,
-                            android.R.layout.simple_list_item_1,
+                            R.layout.list_item,
                             clases
                         )
                         lvClases.adapter = listAdapter
@@ -57,7 +58,7 @@ class VerHorarioActivity : AppCompatActivity() {
                         // Manejar errores, ejemplo: mostrar un mensaje
                         lvClases.adapter = ArrayAdapter(
                             this@VerHorarioActivity,
-                            android.R.layout.simple_list_item_1,
+                            R.layout.list_item,
                             listOf("Error al cargar datos")
                         )
                     }

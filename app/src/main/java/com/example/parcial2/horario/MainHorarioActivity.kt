@@ -17,6 +17,10 @@ class MainHorarioActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Mi horario"
 
+        btnAgregarClase = findViewById(R.id.btnAgregarClase)
+        btnVerHorario = findViewById(R.id.btnVerHorario)
+        btnClaseActual = findViewById(R.id.btnClaseActual)
+
         //Configurar el botón para agregar una clase
         btnAgregarClase.setOnClickListener {
             startActivity(Intent(this, AgregarAsignaturaActivity::class.java))

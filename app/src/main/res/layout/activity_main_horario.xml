@@ -2,30 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@color/background_main">
 
     <Button
         android:id="@+id/btnAgregarClase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Añadir Clase"
-        android:textColor="@color/black" />
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnVerHorario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Ver Horario"
-        android:textColor="@color/black" />
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnClaseActual"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="¿Qué toca ahora?"
-        android:textColor="@color/black" />
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black" />
 
 </LinearLayout>

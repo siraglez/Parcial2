@@ -26,27 +26,27 @@
         android:textColor="@color/text_black"
         android:padding="12dp"/>
 
-    <TextView
-        android:id="@+id/tvFechaSeleccionada"
+    <EditText
+        android:id="@+id/etFecha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fecha"
+        android:hint="Fecha (Ej: 2 de Diciembre)"
+        android:minHeight="48dp"
         android:padding="12dp"
-        android:textColor="@color/text_black"
         android:background="@drawable/edittext_background"
-        android:gravity="center"
-        android:layout_marginTop="16dp" />
+        android:textColor="@color/text_black"
+        android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/tvHoraSeleccionada"
+    <EditText
+        android:id="@+id/etHora"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hora"
+        android:hint="Hora (Ej: 10:30)"
+        android:minHeight="48dp"
         android:padding="12dp"
-        android:textColor="@color/text_black"
         android:background="@drawable/edittext_background"
-        android:gravity="center"
-        android:layout_marginTop="16dp" />
+        android:textColor="@color/text_black"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btnAgregar"

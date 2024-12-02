@@ -2,31 +2,65 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/background_main">
 
     <EditText
         android:id="@+id/etNombreClase"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Asignatura"
-        android:minHeight="48dp"/>
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:background="@drawable/edittext_background"
+        android:textColor="@color/text_black" />
 
     <Spinner
         android:id="@+id/spinnerDias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"/>
+        android:minHeight="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/spinner_background"
+        android:padding="12dp"/>
+
+    <TextView
+        android:id="@+id/tvHoraSeleccionada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fecha y Hora"
+        android:padding="12dp"
+        android:textColor="@color/text_black"
+        android:background="@drawable/edittext_background"
+        android:gravity="center"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnHoraSeleccionada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aceptar Fecha y Hora"
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:id="@+id/btnAgregar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Añadir"/>
+        android:text="Añadir"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"/>
 
     <Button
         android:id="@+id/btnCancelar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancelar"/>
+        android:text="Cancelar"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"/>
 
 </LinearLayout>

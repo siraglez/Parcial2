@@ -23,6 +23,8 @@ class AgregarAsignaturaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_asignatura)
 
+        supportActionBar?.title = "Mi horario - Añadir asignatura"
+
         etNombreClase = findViewById(R.id.etNombreClase)
         spinnerDias = findViewById(R.id.spinnerDias)
         tvHoraSeleccionada = findViewById(R.id.tvHoraSeleccionada)

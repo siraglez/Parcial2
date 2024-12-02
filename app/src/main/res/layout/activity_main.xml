@@ -2,24 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@color/background_main">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Seleccione qué aplicación abrir:"
         android:textSize="24dp"
-        android:TextColor="@color/black"
+        android:textColor="@color/text_black"
         android:layout_marginTop="100dp"
-        android:layout_marginStart="22dp"/>
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/btnHorario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Horario"
-        android:textColor="@color/black" />
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"
+        android:layout_marginBottom="12dp"
+        android:minHeight="48dp"/>
 
     <Button
         android:id="@+id/btnlistado"
@@ -27,7 +32,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Listado Eventos"
-        android:textColor="@color/black" />
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"
+        android:layout_marginBottom="12dp"
+        android:minHeight="48dp"/>
 
     <Button
         android:id="@+id/btnfarmacia"
@@ -35,6 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Farmacias Zaragoza"
-        android:textColor="@color/black" />
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/button_text_black"
+        android:layout_marginBottom="12dp"
+        android:minHeight="48dp"/>
 
 </LinearLayout>

@@ -15,6 +15,8 @@ class VerHorarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ver_horario)
 
+        supportActionBar?.title = "Mi horario - Ver horario"
+
         val spinnerDias = findViewById<Spinner>(R.id.spinnerDiasView)
         val lvClases = findViewById<ListView>(R.id.lvClases)
 

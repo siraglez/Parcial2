@@ -15,6 +15,8 @@ class MainHorarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_horario)
 
+        supportActionBar?.title = "Mi horario"
+
         //Configurar el botón para agregar una clase
         btnAgregarClase.setOnClickListener {
             startActivity(Intent(this, AgregarAsignaturaActivity::class.java))

@@ -17,6 +17,8 @@ class ClaseActualActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_clase_actual)
 
+        supportActionBar?.title = "Mi horario - ¿Qué toca ahora?"
+
         tvFechaHora = findViewById(R.id.tvFechaHora)
         tvClaseActual = findViewById(R.id.tvClaseActual)
 

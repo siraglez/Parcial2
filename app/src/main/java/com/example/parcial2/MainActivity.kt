@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        supportActionBar?.title = "Parcial2"
+
         //Configurar el botón para la aplicación del horario
         btnHorario.setOnClickListener {
             startActivity(Intent(this, MainHorarioActivity::class.java))

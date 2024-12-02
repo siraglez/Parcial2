@@ -19,7 +19,7 @@
         android:minHeight="48dp"/>
 
     <Button
-        android:id="@+id/btnAgregarClase"
+        android:id="@+id/btnAgregar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Añadir"/>

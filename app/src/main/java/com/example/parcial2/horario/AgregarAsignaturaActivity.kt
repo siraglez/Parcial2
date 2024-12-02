@@ -34,29 +34,42 @@ class AgregarAsignaturaActivity : AppCompatActivity() {
         btnCancelar = findViewById(R.id.btnCancelar)
 
         val dias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dias)
+        val adapter = ArrayAdapter(this, R.layout.spinner_item, dias)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerDias.adapter = adapter
 
         // Selección de fecha
         tvFechaSeleccionada.setOnClickListener {
             val calendar = Calendar.getInstance()
-            DatePickerDialog(this, { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                val sdf = SimpleDateFormat("EEEE d 'de' MMMM", Locale.getDefault())
-                fechaSeleccionada = sdf.format(calendar.time)
-                tvFechaSeleccionada.text = fechaSeleccionada
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            val datePickerDialog = DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    calendar.set(year, month, dayOfMonth)
+                    val sdf = SimpleDateFormat("EEEE d 'de' MMMM", Locale("es", "ES"))
+                    fechaSeleccionada = sdf.format(calendar.time)
+                    tvFechaSeleccionada.text = fechaSeleccionada
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
         }
 
         // Selección de hora
         tvHoraSeleccionada.setOnClickListener {
             val calendar = Calendar.getInstance()
-            TimePickerDialog(this, { _, hourOfDay, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
-                horaSeleccionada = String.format("%02d:%02d", hourOfDay, minute)
-                tvHoraSeleccionada.text = "$horaSeleccionada h"
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+            val timePickerDialog = TimePickerDialog(
+                this,
+                { _, hourOfDay, minute ->
+                    horaSeleccionada = String.format("%02d:%02d", hourOfDay, minute)
+                    tvHoraSeleccionada.text = "$horaSeleccionada h"
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            )
+            timePickerDialog.show()
         }
 
         btnAgregar.setOnClickListener {

@@ -1,6 +1,7 @@
 package com.example.parcial2.horario
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -24,6 +25,11 @@ class ClaseActualActivity : AppCompatActivity() {
 
         actualizarFechaHora()
         getClaseActual()
+
+        val btnVolver = findViewById<Button>(R.id.btnVolver)
+        btnVolver.setOnClickListener {
+            finish()
+        }
     }
 
     private fun actualizarFechaHora() {

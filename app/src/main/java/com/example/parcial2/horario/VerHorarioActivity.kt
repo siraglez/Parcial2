@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,11 @@ class VerHorarioActivity : AppCompatActivity() {
 
         val spinnerDias = findViewById<Spinner>(R.id.spinnerDiasView)
         val lvClases = findViewById<ListView>(R.id.lvClases)
+
+        val btnVolver = findViewById<Button>(R.id.btnVolver)
+        btnVolver.setOnClickListener {
+            finish()
+        }
 
         val dias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dias)

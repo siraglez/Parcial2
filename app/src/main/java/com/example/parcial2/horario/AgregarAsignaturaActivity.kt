@@ -10,14 +10,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AgregarAsignaturaActivity : AppCompatActivity() {
-    private var selectedTimestamp: Date? = null
-
-    private lateinit var etNombreClase: EditText
+   private lateinit var etNombreClase: EditText
     private lateinit var spinnerDias: Spinner
     private lateinit var tvHoraSeleccionada: TextView
-    private lateinit var btnHoraSeleccionada: Button
+    private lateinit var tvFechaSeleccionada: TextView
     private lateinit var btnAgregar: Button
     private lateinit var btnCancelar: Button
+
+    private var fechaSeleccionada: String? = null
+    private var horaSeleccionada: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class AgregarAsignaturaActivity : AppCompatActivity() {
         etNombreClase = findViewById(R.id.etNombreClase)
         spinnerDias = findViewById(R.id.spinnerDias)
         tvHoraSeleccionada = findViewById(R.id.tvHoraSeleccionada)
-        btnHoraSeleccionada = findViewById(R.id.btnHoraSeleccionada)
+        tvFechaSeleccionada = findViewById(R.id.tvFechaSeleccionada)
         btnAgregar = findViewById(R.id.btnAgregar)
         btnCancelar = findViewById(R.id.btnCancelar)
 
@@ -36,48 +37,56 @@ class AgregarAsignaturaActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dias)
         spinnerDias.adapter = adapter
 
-        btnHoraSeleccionada.setOnClickListener { showDateTimePicker() }
+        // Selección de fecha
+        tvFechaSeleccionada.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(this, { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                val sdf = SimpleDateFormat("EEEE d 'de' MMMM", Locale.getDefault())
+                fechaSeleccionada = sdf.format(calendar.time)
+                tvFechaSeleccionada.text = fechaSeleccionada
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        // Selección de hora
+        tvHoraSeleccionada.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            TimePickerDialog(this, { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                horaSeleccionada = String.format("%02d:%02d", hourOfDay, minute)
+                tvHoraSeleccionada.text = "$horaSeleccionada h"
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+        }
 
         btnAgregar.setOnClickListener {
             val nombreClase = etNombreClase.text.toString()
             val diaSeleccionado = spinnerDias.selectedItem.toString()
 
-            if (nombreClase.isEmpty() || selectedTimestamp == null) {
+            if (nombreClase.isEmpty() || fechaSeleccionada == null || horaSeleccionada == null) {
                 Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            //Guardar la clase en Firebase
             val db = FirebaseFirestore.getInstance()
             val dataClase = hashMapOf(
                 "nombre" to nombreClase,
                 "dia" to diaSeleccionado,
-                "hora" to selectedTimestamp
+                "fecha" to fechaSeleccionada,
+                "hora" to horaSeleccionada
             )
 
             db.collection("horario")
                 .add(dataClase)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Clase añadida", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al añadir la clase", Toast.LENGTH_SHORT).show()
                 }
         }
 
         btnCancelar.setOnClickListener { finish() }
-    }
-
-    private fun showDateTimePicker() {
-        val calendar = Calendar.getInstance()
-
-        DatePickerDialog(this, { _, year, month, dayOfMonth ->
-            calendar.set(year, month, dayOfMonth)
-            TimePickerDialog(this, { _, hour, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                selectedTimestamp = calendar.time
-
-                val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-                tvHoraSeleccionada.text = sdf.format(selectedTimestamp)
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
     }
 }

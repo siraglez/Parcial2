@@ -25,28 +25,28 @@
                     android:id="@+id/etNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre"
+                    android:hint="@string/event_name"
                     android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/etDescripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Descripción"
+                    android:hint="@string/event_description"
                     android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/etDireccion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Dirección"
+                    android:hint="@string/event_address"
                     android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/etPrecio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Precio"
+                    android:hint="@string/event_price"
                     android:inputType="numberDecimal"
                     android:minHeight="48dp" />
 
@@ -54,14 +54,14 @@
                     android:id="@+id/etFecha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fecha"
+                    android:hint="@string/event_date"
                     android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/etAforo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Aforo"
+                    android:hint="@string/event_capacity"
                     android:minHeight="48dp" />
             </LinearLayout>
 
@@ -71,7 +71,7 @@
                 android:layout_height="100dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_user_placeholder"
-                android:contentDescription="Imagen de usuario"
+                android:contentDescription="@string/user_image"
                 android:scaleType="centerCrop"
                 android:layout_gravity="end"/>
         </LinearLayout>
@@ -88,7 +88,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Guardar" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/btnCerrar"
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="Cerrar" />
+                android:text="@string/close" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

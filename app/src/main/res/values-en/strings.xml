@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Events</string>
+    <string name="add_event">Events Registry</string>
+    <string name="event_name">Name</string>
+    <string name="event_description">Description</string>
+    <string name="event_address">Address</string>
+    <string name="event_price">Price</string>
+    <string name="event_date">Date</string>
+    <string name="event_capacity">Capacity</string>
+    <string name="user_image">User</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+</resources>

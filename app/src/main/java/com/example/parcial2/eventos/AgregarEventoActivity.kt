@@ -107,7 +107,7 @@ class AgregarEventoActivity : AppCompatActivity() {
     }
 
     // Guardar evento en Firebase
-    @SuppressLint("StringFormatInvalid")
+    @SuppressLint("StringFormatInvalid", "SuspiciousIndentation")
     private fun guardarEvento() {
         // Recuperar valores de los campos
         val nombre = etNombre.text.toString().trim()

@@ -46,6 +46,16 @@
             android:label="Mi horario - ¿Qué toca ahora?"
             android:theme="@style/Theme.Parcial2"/>
         <!-- Actividades Eventos -->
+        <activity
+            android:name=".eventos.MainEventoActivity"
+            android:exported="true"
+            android:label="Eventos"
+            android:theme="@style/Theme.Parcial2"/>
+        <activity
+            android:name=".eventos.AgregarEventoActivity"
+            android:exported="true"
+            android:label="Registro de Eventos"
+            android:theme="@style/Theme.Parcial2"/>
         <!-- Actividades Farmacias -->
     </application>
 

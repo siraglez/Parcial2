@@ -8,6 +8,7 @@
     <string name="event_date">Fecha</string>
     <string name="event_capacity">Aforo</string>
     <string name="user_image">Usuario</string>
+    <string name="change_language">Cambiar Idioma</string>
     <string name="save">Guardar</string>
     <string name="close">Cerrar</string>
 </resources>

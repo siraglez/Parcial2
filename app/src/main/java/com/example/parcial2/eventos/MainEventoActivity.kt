@@ -1,7 +1,9 @@
 package com.example.parcial2.eventos
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
@@ -9,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import java.util.Locale
 
 class MainEventoActivity : AppCompatActivity() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -44,6 +47,32 @@ class MainEventoActivity : AppCompatActivity() {
             val intent = Intent(this, AgregarEventoActivity::class.java)
             startActivity(intent)
         }
+
+        // Configurar el botón para cambiar idioma
+        val btnChangeLanguage = findViewById<Button>(R.id.btnChangeLanguage)
+        btnChangeLanguage.setOnClickListener {
+            cambiarIdioma()
+        }
+    }
+
+    private fun cambiarIdioma() {
+        // Cambiar el idioma a español o inglés según la configuración
+        val currentLocale = Locale.getDefault().language
+        val newLocale = if (currentLocale == "es") {
+            Locale("en") // Cambiar a inglés
+        } else {
+            Locale("es") // Cambiar a español
+        }
+
+        // Establecer la nueva configuración regional
+        val config = Configuration(resources.configuration)
+        config.setLocale(newLocale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+
+        // Reiniciar la actividad para aplicar el cambio de idioma
+        val intent = Intent(this, MainEventoActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun actualizarListaEventos(snapshot: QuerySnapshot, adapter: EventoAdapter) {

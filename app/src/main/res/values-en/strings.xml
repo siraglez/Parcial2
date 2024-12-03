@@ -8,6 +8,7 @@
     <string name="event_date">Date</string>
     <string name="event_capacity">Capacity</string>
     <string name="user_image">User</string>
+    <string name="change_language">Change Language</string>
     <string name="save">Save</string>
     <string name="close">Close</string>
 </resources>

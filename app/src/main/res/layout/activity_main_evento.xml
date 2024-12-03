@@ -27,4 +27,13 @@
         android:dividerHeight="1dp"
         android:background="@color/background_main" />
 
+    <Button
+        android:id="@+id/btnChangeLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/change_language"
+        android:textColor="@color/text_white"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/button_background" />
+
 </LinearLayout>

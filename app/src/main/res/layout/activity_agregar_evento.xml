@@ -54,7 +54,7 @@
                     android:id="@+id/etFecha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fecha (Ej: 10/10/24)"
+                    android:hint="Fecha"
                     android:minHeight="48dp" />
 
                 <EditText

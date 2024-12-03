@@ -96,6 +96,18 @@ class AgregarEventoActivity : AppCompatActivity() {
         }
 
         dialog.setNegativeButton("Cancelar", null)
+
+        //Personalizar los botones
+        val alertDialog = dialog.create()
+        alertDialog.setOnShowListener {
+            val positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+            //Cambiar color del texto de los botones
+            positiveButton.setTextColor(resources.getColor(R.color.text_black))
+            negativeButton.setTextColor(resources.getColor(R.color.text_black))
+        }
+
         dialog.show()
     }
 

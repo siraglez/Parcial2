@@ -9,11 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.parcial2.R
 
-class EventoAdapter(private val context: Context, private val eventos: List<Map<String, Any>>) : BaseAdapter() {
+class EventoAdapter(private val context: Context, private val eventos: List<Evento>) : BaseAdapter() {
 
     override fun getCount(): Int = eventos.size
 
-    override fun getItem(position: Int): Map<String, Any> = eventos[position]
+    override fun getItem(position: Int): Evento = eventos[position]
 
     override fun getItemId(position: Int): Long = position.toLong()
 
@@ -25,10 +25,13 @@ class EventoAdapter(private val context: Context, private val eventos: List<Map<
         val tvDescripcionEvento = view.findViewById<TextView>(R.id.tvDescripcionEvento)
         val tvPrecioEvento = view.findViewById<TextView>(R.id.tvPrecioEvento)
 
+        //Obtener el objeto Evento en la posición actual
         val evento = getItem(position)
-        tvNombreEvento.text = evento["nombre"] as String
-        tvDescripcionEvento.text = evento["descripcion"] as String
-        tvPrecioEvento.text = "${evento["precio"]} €"
+
+        //Asignar los valores correspondientes a las vistas
+        tvNombreEvento.text = evento.nombre
+        tvDescripcionEvento.text = evento.descripcion
+        tvPrecioEvento.text = "${evento.precio} €"
         imgEvento.setImageResource(R.drawable.ic_user_placeholder)
 
         return view

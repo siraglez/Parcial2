@@ -1,16 +1,32 @@
 package com.example.parcial2.eventos
 
 import android.os.Bundle
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.NumberPicker
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import java.util.Calendar
 
 class AgregarEventoActivity : AppCompatActivity() {
-    private lateinit var database: DatabaseReference
+    private val db: FirebaseFirestore = Firebase.firestore
+
+    private lateinit var etNombre: EditText
+    private lateinit var etDescripcion: EditText
+    private lateinit var etDireccion: EditText
+    private lateinit var etPrecio: EditText
+    private lateinit var etFecha: EditText
+    private lateinit var etAforo: EditText
+    private lateinit var btnGuardar: Button
+    private lateinit var btnCerrar: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,52 +34,88 @@ class AgregarEventoActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Registro de Eventos"
 
-        val etNombre = findViewById<EditText>(R.id.etNombre)
-        val etDescripcion = findViewById<EditText>(R.id.etDescripcion)
-        val etDireccion = findViewById<EditText>(R.id.etDireccion)
-        val etPrecio = findViewById<EditText>(R.id.etPrecio)
-        val etFecha = findViewById<EditText>(R.id.etFecha)
-        val etAforo = findViewById<EditText>(R.id.etAforo)
-        val btnGuardar = findViewById<Button>(R.id.btnGuardar)
-        val btnCerrar = findViewById<Button>(R.id.btnCerrar)
-
-        //Inicializar Firebase
-        database = FirebaseDatabase.getInstance().getReference("eventos")
-
-        btnCerrar.setOnClickListener { finish() }
+        etNombre = findViewById(R.id.etNombre)
+        etDescripcion = findViewById(R.id.etDescripcion)
+        etDireccion = findViewById(R.id.etDireccion)
+        etPrecio = findViewById(R.id.etPrecio)
+        etFecha = findViewById(R.id.etFecha)
+        etAforo = findViewById(R.id.etAforo)
+        btnGuardar = findViewById(R.id.btnGuardar)
+        btnCerrar = findViewById(R.id.btnCerrar)
 
         btnGuardar.setOnClickListener {
-            val nombre = etNombre.text.toString()
-            val descripcion = etDescripcion.text.toString()
-            val direccion = etDireccion.text.toString()
-            val precio = etPrecio.text.toString().toIntOrNull() ?: 0
-            val fecha = etFecha.text.toString()
-            val aforo = etAforo.text.toString().toIntOrNull() ?: 0
+            guardarEvento()
+        }
 
-            if (nombre.isNotEmpty() && descripcion.isNotEmpty()) {
-                val eventoId = database.push().key ?: ""
-                val evento = Evento(nombre, descripcion, direccion, fecha, precio, aforo)
+        btnCerrar.setOnClickListener {
+            finish()
+        }
 
-                database.child(eventoId).setValue(evento).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Toast.makeText(this, "Evento agregado", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Error al agregar evento", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } else {
-                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
-            }
+        etFecha.inputType = InputType.TYPE_NULL
+        etFecha.isFocusable = false
+
+        etFecha.setOnClickListener {
+            mostrarCalendario()
         }
     }
-}
 
-data class Evento(
-    val nombre: String,
-    val descripcion: String,
-    val direccion: String,
-    val fecha: String,
-    val precio: Int,
-    val aforo: Int
-)
+    fun mostrarCalendario() {
+        val dialog = AlertDialog.Builder(this)
+        val layout = LinearLayout(this)
+        layout.orientation = LinearLayout.HORIZONTAL
+
+        val pickerDia = NumberPicker(this)
+        pickerDia.minValue = 1
+        pickerDia.maxValue = 31
+        pickerDia.value = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+
+        val pickerMes = NumberPicker(this)
+        pickerMes.minValue = 1
+        pickerMes.maxValue = 12
+        pickerMes.value = Calendar.getInstance().get(Calendar.MONTH) + 1
+
+        val pickerAnio = NumberPicker(this)
+        val anioActual = Calendar.getInstance().get(Calendar.YEAR)
+        pickerAnio.minValue = 1000
+        pickerAnio.maxValue = anioActual + 100
+        pickerAnio.value = anioActual
+
+        layout.addView(pickerDia)
+        layout.addView(pickerMes)
+        layout.addView(pickerAnio)
+
+        dialog.setTitle("Selecciona una fecha")
+        dialog.setView(layout)
+
+        dialog.setPositiveButton("Aceptar") { _, _ ->
+            val dia = pickerDia.value
+            val mes = pickerMes.value
+            val anio = pickerAnio.value
+            val fechaSeleccionada = "$dia/$mes/$anio"
+            etFecha.setText(fechaSeleccionada)
+        }
+
+        dialog.setNegativeButton("Cancelar", null)
+        dialog.show()
+    }
+
+    private fun guardarEvento(){
+        val nombre = etNombre.text.toString()
+        val descripcion = etDescripcion.text.toString()
+        val direccion = etDireccion.text.toString()
+        val fecha = etFecha.text.toString()
+        val precio = etPrecio.text.toString().toInt()
+        val aforo = etAforo.text.toString().toInt()
+        val eventoNuevo = Evento(nombre, descripcion, direccion, fecha, precio, aforo)
+
+        db.collection("eventos")
+            .add(eventoNuevo)
+            .addOnSuccessListener { documentReference ->
+                Toast.makeText(this, "Evento guardado: ${eventoNuevo.nombre}", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error al guardar el evento: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+}

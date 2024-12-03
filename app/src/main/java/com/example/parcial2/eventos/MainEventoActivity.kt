@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
-import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 
 class MainEventoActivity : AppCompatActivity() {
-    private lateinit var database: DatabaseReference
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var listViewEventos: ListView
     private val eventosList = mutableListOf<Map<String, Any>>()
 
@@ -22,39 +24,50 @@ class MainEventoActivity : AppCompatActivity() {
         listViewEventos = findViewById(R.id.lvEventos)
         val btnAgregarEvento = findViewById<ImageButton>(R.id.btnAgregarEvento)
 
-        //Inicializar Firebase
-        database = FirebaseDatabase.getInstance().getReference("eventos")
-
-        val adapter = EventoAdapter(this, eventosList)
-        listViewEventos.adapter = adapter
-
-        //Recuperar eventos desde Firebase
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                eventosList.clear()
-                for (eventoSnapshot in snapshot.children) {
-                    val nombre = eventoSnapshot.child("nombre").getValue(String::class.java) ?: "Sin nombre"
-                    val descripcion = eventoSnapshot.child("descripcion").getValue(String::class.java) ?: "Sin descripción"
-                    val precio = eventoSnapshot.child("precio").getValue(Int::class.java) ?: 0
-
-                    val evento = mapOf(
-                        "nombre" to nombre,
-                        "descripcion" to descripcion,
-                        "precio" to precio
-                    )
-                    eventosList.add(evento)
-                }
-                adapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                //Manejo de errores
-            }
+        val adapter = EventoAdapter(this, eventosList.map {
+            Evento(
+                it["nombre"] as String,
+                it["descripcion"] as String,
+                it["direccion"] as String,
+                it["fecha"] as String,
+                (it["precio"] as Number).toInt(),
+                (it["aforo"] as Number).toInt()
+            )
         })
+
+        //Recuperar eventos desde Firestore
+        db.collection("eventos")
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    Toast.makeText(this, "Error al cargar eventos: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    actualizarListaEventos(snapshot, adapter)
+                }
+            }
 
         btnAgregarEvento.setOnClickListener {
             val intent = Intent(this, AgregarEventoActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun actualizarListaEventos(snapshot: QuerySnapshot, adapter: EventoAdapter) {
+        eventosList.clear()
+        for (document in snapshot.documents) {
+            val nombre = document.getString("nombre") ?: "Sin nombre"
+            val descripcion = document.getString("descripcion") ?: "Sin descripción"
+            val precio = document.getDouble("precio") ?: 0.0
+
+            val evento = mapOf(
+                "nombre" to nombre,
+                "descripcion" to descripcion,
+                "precio" to precio
+            )
+            eventosList.add(evento)
+        }
+        adapter.notifyDataSetChanged()
     }
 }

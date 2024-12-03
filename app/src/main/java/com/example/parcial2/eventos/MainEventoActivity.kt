@@ -13,7 +13,7 @@ import com.google.firebase.firestore.QuerySnapshot
 class MainEventoActivity : AppCompatActivity() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var listViewEventos: ListView
-    private val eventosList = mutableListOf<Map<String, Any>>()
+    private val eventosList = mutableListOf<Evento>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,18 +24,10 @@ class MainEventoActivity : AppCompatActivity() {
         listViewEventos = findViewById(R.id.lvEventos)
         val btnAgregarEvento = findViewById<ImageButton>(R.id.btnAgregarEvento)
 
-        val adapter = EventoAdapter(this, eventosList.map {
-            Evento(
-                it["nombre"] as String,
-                it["descripcion"] as String,
-                it["direccion"] as String,
-                it["fecha"] as String,
-                (it["precio"] as Number).toInt(),
-                (it["aforo"] as Number).toInt()
-            )
-        })
+        val adapter = EventoAdapter(this, eventosList)
+        listViewEventos.adapter = adapter
 
-        //Recuperar eventos desde Firestore
+        // Recuperar eventos desde Firestore
         db.collection("eventos")
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
@@ -55,17 +47,17 @@ class MainEventoActivity : AppCompatActivity() {
     }
 
     private fun actualizarListaEventos(snapshot: QuerySnapshot, adapter: EventoAdapter) {
-        eventosList.clear()
+        eventosList.clear() // Limpiar la lista antes de actualizarla
         for (document in snapshot.documents) {
             val nombre = document.getString("nombre") ?: "Sin nombre"
             val descripcion = document.getString("descripcion") ?: "Sin descripción"
-            val precio = document.getDouble("precio") ?: 0.0
+            val direccion = document.getString("direccion") ?: "Sin dirección"
+            val fecha = document.getString("fecha") ?: "Sin fecha"
+            val precio = document.getDouble("precio")?.toInt() ?: 0
+            val aforo = document.getLong("aforo")?.toInt() ?: 0
 
-            val evento = mapOf(
-                "nombre" to nombre,
-                "descripcion" to descripcion,
-                "precio" to precio
-            )
+            // Crear un objeto Evento y agregarlo a la lista
+            val evento = Evento(nombre, descripcion, direccion, fecha, precio, aforo)
             eventosList.add(evento)
         }
         adapter.notifyDataSetChanged()

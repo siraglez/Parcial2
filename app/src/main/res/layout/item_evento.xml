@@ -3,7 +3,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/imgEvento"
@@ -12,34 +13,35 @@
         android:src="@drawable/ic_user_placeholder"
         android:contentDescription="@string/user_image"
         android:layout_marginEnd="8dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"/>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
+
+    <TextView
+        android:id="@+id/tvNombreEvento"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:textColor="@color/text_black"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/tvNombreEvento"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/tvDescripcionEvento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_black"
+        android:textSize="14sp"/>
 
-        <TextView
-            android:id="@+id/tvDescripcionEvento"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
-            android:textSize="14sp" />
+    <TextView
+        android:id="@+id/tvPrecioEvento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_black"
+        android:textSize="14sp"/>
 
-        <TextView
-            android:id="@+id/tvPrecioEvento"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_black"
-            android:textSize="14sp" />
-    </LinearLayout>
+</LinearLayout>
 </LinearLayout>

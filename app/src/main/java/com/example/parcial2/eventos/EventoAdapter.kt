@@ -25,13 +25,15 @@ class EventoAdapter(private val context: Context, private val eventos: List<Even
         val tvDescripcionEvento = view.findViewById<TextView>(R.id.tvDescripcionEvento)
         val tvPrecioEvento = view.findViewById<TextView>(R.id.tvPrecioEvento)
 
-        //Obtener el objeto Evento en la posición actual
+        // Obtener el objeto Evento en la posición actual
         val evento = getItem(position)
 
-        //Asignar los valores correspondientes a las vistas
+        // Asignar los valores correspondientes a las vistas
         tvNombreEvento.text = evento.nombre
         tvDescripcionEvento.text = evento.descripcion
         tvPrecioEvento.text = "${evento.precio} €"
+
+        // Asignar la imagen del evento
         imgEvento.setImageResource(R.drawable.ic_user_placeholder)
 
         return view

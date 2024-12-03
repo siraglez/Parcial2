@@ -35,7 +35,7 @@ class AgregarEventoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_evento)
 
-        supportActionBar?.title = "Registro de Eventos"
+        supportActionBar?.title = getString(R.string.add_event)
 
         // Inicializar vistas
         etNombre = findViewById(R.id.etNombre)

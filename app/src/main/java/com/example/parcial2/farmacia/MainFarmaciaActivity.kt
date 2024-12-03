@@ -5,10 +5,11 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.google.firebase.firestore.FirebaseFirestore
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
 class MainFarmaciaActivity : AppCompatActivity() {
 
@@ -26,9 +27,6 @@ class MainFarmaciaActivity : AppCompatActivity() {
 
         val adapter = FarmaciaAdapter(this, farmaciasList)
         listViewFarmacias.adapter = adapter
-
-        // Llamar a la API para obtener las farmacias
-        obtenerFarmaciasDeLaApi()
 
         // Recuperar farmacias desde Firebase
         db.collection("farmacias")
@@ -49,23 +47,55 @@ class MainFarmaciaActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error al cargar farmacias desde Firebase: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+
+        // Llamar a la API para obtener las farmacias y subirlas a Firebase
+        obtenerFarmaciasDeLaApi()
     }
 
     private fun obtenerFarmaciasDeLaApi() {
-        RetrofitClient.instance.getFarmacias().enqueue(object : Callback<List<Farmacia>> {
-            override fun onResponse(call: Call<List<Farmacia>>, response: Response<List<Farmacia>>) {
-                if (response.isSuccessful) {
-                    val farmacias = response.body() ?: emptyList()
-                    // Subir farmacias a Firebase
+        thread {
+            try {
+                val url = URL("https://www.zaragoza.es/georref/json/hilo/farmacias_Equipamiento")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connect()
+
+                val responseCode = connection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = connection.inputStream
+                    val response = inputStream.bufferedReader().use { it.readText() }
+
+                    // Parsear el JSON recibido
+                    val jsonArray = JSONArray(response)
+                    val farmacias = mutableListOf<Farmacia>()
+                    for (i in 0 until jsonArray.length()) {
+                        val farmaciaJson = jsonArray.getJSONObject(i)
+                        val nombre = farmaciaJson.getString("nombre")
+                        val telefono = farmaciaJson.getString("telefono")
+                        val latitud = farmaciaJson.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1)
+                        val longitud = farmaciaJson.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0)
+
+                        // Crear la farmacia y agregarla a la lista
+                        val farmacia = Farmacia(nombre, telefono, Geometry(listOf(longitud, latitud)))
+                        farmacias.add(farmacia)
+                    }
+
+                    // Subir las farmacias a Firebase
                     firebaseService.subirFarmaciasAFirebase(farmacias)
+
+                    runOnUiThread {
+                        Toast.makeText(this, "Farmacias cargadas y subidas a Firebase", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    Toast.makeText(this@MainFarmaciaActivity, "Error al cargar datos de la API", Toast.LENGTH_SHORT).show()
+                    runOnUiThread {
+                        Toast.makeText(this, "Error al cargar los datos de la API", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, "Error al conectarse con la API: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-
-            override fun onFailure(call: Call<List<Farmacia>>, t: Throwable) {
-                Toast.makeText(this@MainFarmaciaActivity, "Error en la solicitud: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+        }
     }
 }

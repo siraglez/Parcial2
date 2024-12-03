@@ -1,6 +1,7 @@
 package com.example.parcial2.farmacia
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -61,9 +62,12 @@ class MainFarmaciaActivity : AppCompatActivity() {
                 connection.connect()
 
                 val responseCode = connection.responseCode
+                Log.d("API", "Response code: $responseCode")
+
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     val inputStream = connection.inputStream
                     val response = inputStream.bufferedReader().use { it.readText() }
+                    Log.d("API Response", response)
 
                     // Parsear el JSON recibido
                     val jsonArray = JSONArray(response)
@@ -94,6 +98,7 @@ class MainFarmaciaActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 runOnUiThread {
                     Toast.makeText(this, "Error al conectarse con la API: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("API Error", "Exception: ${e.message}")
                 }
             }
         }

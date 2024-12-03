@@ -1,5 +1,8 @@
 package com.example.parcial2.eventos
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Button
@@ -12,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
+import java.util.Locale
 
 class AgregarEventoActivity : AppCompatActivity() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -26,6 +30,8 @@ class AgregarEventoActivity : AppCompatActivity() {
     private lateinit var btnCerrar: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Aplicar idioma según la preferencia guardada
+        aplicarIdioma(getSavedLanguage())
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_evento)
 
@@ -85,10 +91,10 @@ class AgregarEventoActivity : AppCompatActivity() {
         layout.addView(pickerMes)
         layout.addView(pickerAnio)
 
-        dialog.setTitle("Selecciona una fecha")
+        dialog.setTitle(getString(R.string.event_date))
         dialog.setView(layout)
 
-        dialog.setPositiveButton("Aceptar") { _, _ ->
+        dialog.setPositiveButton(getString(R.string.accept)) { _, _ ->
             val dia = pickerDia.value
             val mes = pickerMes.value
             val anio = pickerAnio.value
@@ -96,11 +102,12 @@ class AgregarEventoActivity : AppCompatActivity() {
             etFecha.setText(fechaSeleccionada)
         }
 
-        dialog.setNegativeButton("Cancelar", null)
+        dialog.setNegativeButton(getString(R.string.cancel), null)
         dialog.show()
     }
 
     // Guardar evento en Firebase
+    @SuppressLint("StringFormatInvalid")
     private fun guardarEvento() {
         // Recuperar valores de los campos
         val nombre = etNombre.text.toString().trim()
@@ -113,7 +120,7 @@ class AgregarEventoActivity : AppCompatActivity() {
         // Validar campos
         if (nombre.isEmpty() || descripcion.isEmpty() || direccion.isEmpty() || fecha.isEmpty() ||
             precioStr.isEmpty() || aforoStr.isEmpty()) {
-            Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.complete_all_fields), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -122,7 +129,7 @@ class AgregarEventoActivity : AppCompatActivity() {
         val aforo = aforoStr.toIntOrNull()
 
         if (precio == null || aforo == null) {
-            Toast.makeText(this, "Precio y Aforo deben ser números válidos.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.invalid_price_capacity), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -136,20 +143,29 @@ class AgregarEventoActivity : AppCompatActivity() {
             "aforo" to aforo
         )
 
-        // Intentar guardar en Firebase
-        try {
             db.collection("eventos")
                 .add(eventoNuevo)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Evento guardado exitosamente", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.event_saved), Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error al guardar el evento: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.event_saved_error, e.message), Toast.LENGTH_SHORT).show()
                 }
-        } catch (e: Exception) {
-            // Manejar cualquier excepción
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
+    }
+
+    // Obtener el idioma guardado
+    private fun getSavedLanguage(): String {
+        val preferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        return preferences.getString("language", Locale.getDefault().language) ?: "en"
+    }
+
+    // Aplicar idioma
+    private fun aplicarIdioma(language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = Configuration(resources.configuration)
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }

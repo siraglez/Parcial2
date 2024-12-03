@@ -1,5 +1,6 @@
 package com.example.parcial2.eventos
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -20,9 +21,13 @@ class MainEventoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Aplicar idioma según preferencia guardada
+        aplicarIdioma(getSavedLanguage())
+
         setContentView(R.layout.activity_main_evento)
 
-        supportActionBar?.title = "Eventos"
+        supportActionBar?.title = getString(R.string.app_name)
 
         listViewEventos = findViewById(R.id.lvEventos)
         val btnAgregarEvento = findViewById<ImageButton>(R.id.btnAgregarEvento)
@@ -55,28 +60,8 @@ class MainEventoActivity : AppCompatActivity() {
         }
     }
 
-    private fun cambiarIdioma() {
-        // Cambiar el idioma a español o inglés según la configuración
-        val currentLocale = Locale.getDefault().language
-        val newLocale = if (currentLocale == "es") {
-            Locale("en") // Cambiar a inglés
-        } else {
-            Locale("es") // Cambiar a español
-        }
-
-        // Establecer la nueva configuración regional
-        val config = Configuration(resources.configuration)
-        config.setLocale(newLocale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-
-        // Reiniciar la actividad para aplicar el cambio de idioma
-        val intent = Intent(this, MainEventoActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
     private fun actualizarListaEventos(snapshot: QuerySnapshot, adapter: EventoAdapter) {
-        eventosList.clear() // Limpiar la lista antes de actualizarla
+        eventosList.clear()
         for (document in snapshot.documents) {
             val nombre = document.getString("nombre") ?: "Sin nombre"
             val descripcion = document.getString("descripcion") ?: "Sin descripción"
@@ -85,10 +70,45 @@ class MainEventoActivity : AppCompatActivity() {
             val precio = document.getDouble("precio")?.toInt() ?: 0
             val aforo = document.getLong("aforo")?.toInt() ?: 0
 
-            // Crear un objeto Evento y agregarlo a la lista
             val evento = Evento(nombre, descripcion, direccion, fecha, precio, aforo)
             eventosList.add(evento)
         }
         adapter.notifyDataSetChanged()
+    }
+
+    // Cambiar el idioma y guardar la preferencia
+    private fun cambiarIdioma() {
+        val newLocale = if (getSavedLanguage() == "es") "en" else "es"
+        saveLanguage(newLocale)
+        aplicarIdioma(newLocale)
+        reiniciarActividad()
+    }
+
+    // Aplicar el idioma configurado
+    private fun aplicarIdioma(language: String) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val config = Configuration(resources.configuration)
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
+    // Guardar el idioma en SharedPreferences
+    private fun saveLanguage(language: String) {
+        val preferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        preferences.edit().putString("language", language).apply()
+    }
+
+    // Obtener el idioma guardado
+    private fun getSavedLanguage(): String {
+        val preferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        return preferences.getString("language", Locale.getDefault().language) ?: "en"
+    }
+
+    // Reiniciar la actividad para aplicar cambios de idioma
+    private fun reiniciarActividad() {
+        val intent = Intent(this, MainEventoActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

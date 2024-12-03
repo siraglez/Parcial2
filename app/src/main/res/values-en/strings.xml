@@ -11,4 +11,10 @@
     <string name="change_language">Change Language</string>
     <string name="save">Save</string>
     <string name="close">Close</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancelar</string>
+    <string name="complete_all_fields">Please complete all fields</string>
+    <string name="invalid_price_capacity">Price and capacity have to be valid numbers</string>
+    <string name="event_saved">Event saved succesfully</string>
+    <string name="event_saved_error">Error when saving the event</string>
 </resources>

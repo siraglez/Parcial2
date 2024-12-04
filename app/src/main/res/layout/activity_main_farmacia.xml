@@ -5,6 +5,15 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/btnVolver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver"
+        android:textColor="@color/text_black"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/button_background" />
+
+    <Button
         android:id="@+id/btnCargarFarmacias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,13 +27,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textColor="@color/text_black"/>
-
-    <Button
-        android:id="@+id/btnVolver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Volver"
-        android:textColor="@color/text_black"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/button_background" />
 </LinearLayout>

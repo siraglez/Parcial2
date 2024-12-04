@@ -1,5 +1,6 @@
 package com.example.parcial2.farmacia
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.parcial2.MainActivity
 import com.example.parcial2.R
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,7 +23,9 @@ class MainFarmaciaActivity : AppCompatActivity() {
     private lateinit var listViewFarmacias: ListView
     private val farmaciasList = mutableListOf<Farmacia>()
     private lateinit var btnCargarFarmacias: Button
+    private lateinit var btnVolver: Button
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_farmacia)
@@ -29,6 +33,13 @@ class MainFarmaciaActivity : AppCompatActivity() {
         supportActionBar?.title = "Farmacias en Zaragoza"
         listViewFarmacias = findViewById(R.id.lvFarmacias)
         btnCargarFarmacias = findViewById(R.id.btnCargarFarmacias)
+
+        btnVolver = findViewById(R.id.btnVolver)
+
+        //Configurar el botón para volver a la pantalla de inicio
+        btnVolver.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
 
         val adapter = FarmaciaAdapter(this, farmaciasList)
         listViewFarmacias.adapter = adapter

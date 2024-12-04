@@ -17,4 +17,5 @@
     <string name="invalid_price_capacity">Precio y aforo deben ser números válidos</string>
     <string name="event_saved">Evento guardado exitosamente</string>
     <string name="event_saved_error">Error al guardar el evento</string>
+    <string name="go_back">Volver</string>
 </resources>

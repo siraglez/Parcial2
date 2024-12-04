@@ -1,5 +1,6 @@
 package com.example.parcial2.eventos
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -9,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.parcial2.MainActivity
 import com.example.parcial2.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -18,7 +20,9 @@ class MainEventoActivity : AppCompatActivity() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var listViewEventos: ListView
     private val eventosList = mutableListOf<Evento>()
+    private lateinit var btnVolver: Button
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,6 +32,13 @@ class MainEventoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_evento)
 
         supportActionBar?.title = getString(R.string.app_name)
+
+        btnVolver = findViewById(R.id.btnVolver)
+
+        //Configurar el botón para volver a la pantalla de inicio
+        btnVolver.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
 
         listViewEventos = findViewById(R.id.lvEventos)
         val btnAgregarEvento = findViewById<ImageButton>(R.id.btnAgregarEvento)

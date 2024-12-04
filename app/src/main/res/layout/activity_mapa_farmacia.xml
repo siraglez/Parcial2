@@ -7,15 +7,24 @@
         android:id="@+id/imgMapa"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:src="@drawable/static_map" />
 
     <ImageView
         android:id="@+id/imgMarker"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:src="@drawable/ic_marker"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volver"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/button_background"
+        android:textColor="@color/text_black" />
 </RelativeLayout>
 

@@ -1,6 +1,7 @@
 package com.example.parcial2.farmacia
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
@@ -15,43 +16,38 @@ class MapaFarmaciaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mapa_farmacia)
 
-        supportActionBar?.title = "Mapa farmacias"
+        supportActionBar?.title = "Mapa de Farmacia"
 
-        // Recuperar datos de la farmacia
         nombre = intent.getStringExtra("nombre")
         latitud = intent.getDoubleExtra("latitud", 0.0)
         longitud = intent.getDoubleExtra("longitud", 0.0)
 
         val imgMapa = findViewById<ImageView>(R.id.imgMapa)
         val imgMarker = findViewById<ImageView>(R.id.imgMarker)
+        val btnVolver = findViewById<Button>(R.id.btnVolver)
 
-        // Simular la ubicación del marcador
-        colocarMarcador(imgMarker, latitud, longitud)
+        imgMapa.post {
+            colocarMarcador(imgMarker, latitud, longitud)
+        }
+
+        btnVolver.setOnClickListener {
+            finish()
+        }
     }
 
     private fun colocarMarcador(marker: ImageView, lat: Double, lng: Double) {
-        // Simulación: convertir latitud y longitud a posición relativa en el mapa
-        val posicionX = calcularPosicionX(lng)
-        val posicionY = calcularPosicionY(lat)
+        val minLat = 41.606 // Latitud mínima en Zaragoza
+        val maxLat = 41.700 // Latitud máxima en Zaragoza
+        val minLng = -0.92  // Longitud mínima en Zaragoza
+        val maxLng = -0.82  // Longitud máxima en Zaragoza
 
-        marker.x = posicionX
-        marker.y = posicionY
+        // Calcular la posición relativa en píxeles
+        val xPos = ((lng - minLng) / (maxLng - minLng) * 1155).toFloat()
+        val yPos = ((1 - (lat - minLat) / (maxLat - minLat)) * 792).toFloat()
+
+        // Ajustar posición del marcador
+        marker.x = xPos - marker.width / 2
+        marker.y = yPos - marker.height / 2
         marker.visibility = ImageView.VISIBLE
-    }
-
-    private fun calcularPosicionX(longitud: Double): Float {
-        // Simulación: ajustar según el rango de longitud en la imagen
-        val minLng = -0.9 // Longitud mínima en Zaragoza (simulada)
-        val maxLng = 0.2  // Longitud máxima en Zaragoza (simulada)
-        val anchoMapa = resources.getDrawable(R.drawable.static_map).intrinsicWidth
-        return ((longitud - minLng) / (maxLng - minLng) * anchoMapa).toFloat()
-    }
-
-    private fun calcularPosicionY(latitud: Double): Float {
-        // Simulación: ajustar según el rango de latitud en la imagen
-        val minLat = 41.6 // Latitud mínima en Zaragoza (simulada)
-        val maxLat = 41.8 // Latitud máxima en Zaragoza (simulada)
-        val altoMapa = resources.getDrawable(R.drawable.static_map).intrinsicHeight
-        return ((1 - (latitud - minLat) / (maxLat - minLat)) * altoMapa).toFloat()
     }
 }

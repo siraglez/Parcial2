@@ -1,23 +1,26 @@
 package com.example.parcial2.farmacia
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcial2.R
+import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
-import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.concurrent.thread
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class MainFarmaciaActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
     private lateinit var listViewFarmacias: ListView
     private val farmaciasList = mutableListOf<Farmacia>()
-    private val firebaseService = FirebaseService()
+    private lateinit var btnCargarFarmacias: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,20 +28,41 @@ class MainFarmaciaActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Farmacias en Zaragoza"
         listViewFarmacias = findViewById(R.id.lvFarmacias)
+        btnCargarFarmacias = findViewById(R.id.btnCargarFarmacias)
 
         val adapter = FarmaciaAdapter(this, farmaciasList)
         listViewFarmacias.adapter = adapter
 
-        // Recuperar farmacias desde Firebase
+        // Recuperar farmacias desde Firebase y actualizar la lista
+        cargarFarmaciasDesdeFirebase(adapter)
+
+        // Configurar botón para cargar farmacias desde JSON
+        btnCargarFarmacias.setOnClickListener {
+            loadFarmaciasToFirestore()
+            btnCargarFarmacias.visibility = View.GONE // Ocultar botón después de cargar
+        }
+
+        // Navegar a MapaFarmaciaActivity al pulsar un elemento
+        listViewFarmacias.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            val farmacia = farmaciasList[position]
+            val intent = Intent(this, MapaFarmaciaActivity::class.java)
+            intent.putExtra("nombre", farmacia.nombre)
+            intent.putExtra("latitud", farmacia.geometry.coordinates[1])
+            intent.putExtra("longitud", farmacia.geometry.coordinates[0])
+            startActivity(intent)
+        }
+    }
+
+    private fun cargarFarmaciasDesdeFirebase(adapter: FarmaciaAdapter) {
         db.collection("farmacias")
             .get()
             .addOnSuccessListener { documents ->
                 farmaciasList.clear()
                 for (document in documents) {
-                    val nombre = document.getString("nombre") ?: "Sin nombre"
+                    val nombre = document.getString("title") ?: "Sin nombre"
                     val telefono = document.getString("telefono") ?: "Sin teléfono"
-                    val latitud = document.getDouble("latitud") ?: 0.0
-                    val longitud = document.getDouble("longitud") ?: 0.0
+                    val latitud = document.getDouble("coordinates.latitude") ?: 0.0
+                    val longitud = document.getDouble("coordinates.longitude") ?: 0.0
 
                     val farmacia = Farmacia(nombre, telefono, Geometry(listOf(longitud, latitud)))
                     farmaciasList.add(farmacia)
@@ -46,61 +70,60 @@ class MainFarmaciaActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error al cargar farmacias desde Firebase: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error al cargar farmacias: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-
-        // Llamar a la API para obtener las farmacias y subirlas a Firebase
-        obtenerFarmaciasDeLaApi()
     }
 
-    private fun obtenerFarmaciasDeLaApi() {
-        thread {
-            try {
-                val url = URL("https://www.zaragoza.es/georref/json/hilo/farmacias_Equipamiento")
-                val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
-                connection.connect()
+    private fun loadFarmaciasToFirestore() {
+        FirebaseApp.initializeApp(this)
+        val firestore = FirebaseFirestore.getInstance()
 
-                val responseCode = connection.responseCode
-                Log.d("API", "Response code: $responseCode")
+        val inputStream = resources.openRawResource(R.raw.farmacias_equipamiento)
+        val jsonData = BufferedReader(InputStreamReader(inputStream)).use { it.readText() }
 
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    val inputStream = connection.inputStream
-                    val response = inputStream.bufferedReader().use { it.readText() }
-                    Log.d("API Response", response)
+        try {
+            val jsonObject = JSONObject(jsonData)
+            val featuresArray = jsonObject.getJSONArray("features")
 
-                    // Parsear el JSON recibido
-                    val jsonArray = JSONArray(response)
-                    val farmacias = mutableListOf<Farmacia>()
-                    for (i in 0 until jsonArray.length()) {
-                        val farmaciaJson = jsonArray.getJSONObject(i)
-                        val nombre = farmaciaJson.getString("nombre")
-                        val telefono = farmaciaJson.getString("telefono")
-                        val latitud = farmaciaJson.getJSONObject("geometry").getJSONArray("coordinates").getDouble(1)
-                        val longitud = farmaciaJson.getJSONObject("geometry").getJSONArray("coordinates").getDouble(0)
+            for (i in 0 until featuresArray.length()) {
+                val feature = featuresArray.getJSONObject(i)
+                val properties = feature.getJSONObject("properties")
+                val geometry = feature.getJSONObject("geometry")
+                val coordinates = geometry.getJSONArray("coordinates")
 
-                        // Crear la farmacia y agregarla a la lista
-                        val farmacia = Farmacia(nombre, telefono, Geometry(listOf(longitud, latitud)))
-                        farmacias.add(farmacia)
+                val description = properties.getString("description")
+                val telefono = extraerTelefono(description) ?: "Sin teléfono"
+
+                val data = mapOf(
+                    "title" to properties.getString("title"),
+                    "description" to description,
+                    "telefono" to telefono, // Cambiar aquí
+                    "icon" to properties.getString("icon"),
+                    "coordinates" to mapOf(
+                        "latitude" to coordinates.getDouble(1),
+                        "longitude" to coordinates.getDouble(0)
+                    )
+                )
+
+                firestore.collection("farmacias")
+                    .add(data)
+                    .addOnSuccessListener { documentRef ->
+                        println("Documento añadido con ID: ${documentRef.id}")
                     }
-
-                    // Subir las farmacias a Firebase
-                    firebaseService.subirFarmaciasAFirebase(farmacias)
-
-                    runOnUiThread {
-                        Toast.makeText(this, "Farmacias cargadas y subidas a Firebase", Toast.LENGTH_SHORT).show()
+                    .addOnFailureListener { e ->
+                        println("Error al añadir documento: $e")
                     }
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Error al cargar los datos de la API", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(this, "Error al conectarse con la API: ${e.message}", Toast.LENGTH_SHORT).show()
-                    Log.e("API Error", "Exception: ${e.message}")
-                }
             }
+
+            Toast.makeText(this, "Farmacias cargadas desde JSON y subidas a Firebase", Toast.LENGTH_SHORT).show()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
+
+    private fun extraerTelefono(description: String): String? {
+        val regex = "\\d{9}".toRegex() // Busca un número de 9 dígitos
+        return regex.find(description)?.value
     }
 }

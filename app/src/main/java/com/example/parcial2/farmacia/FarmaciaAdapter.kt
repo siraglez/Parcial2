@@ -27,6 +27,11 @@ class FarmaciaAdapter(private val context: Context, private val farmacias: List<
         val farmacia = getItem(position)
         tvNombreFarmacia.text = farmacia.nombre
         tvTelefonoFarmacia.text = farmacia.telefono
+
+        // Asegurar el color del texto negro
+        tvNombreFarmacia.setTextColor(context.getColor(R.color.text_black))
+        tvTelefonoFarmacia.setTextColor(context.getColor(R.color.text_black))
+
         imgFarmacia.setImageResource(R.drawable.ic_pharmacy)
 
         return view
